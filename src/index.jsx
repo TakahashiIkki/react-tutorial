@@ -1,38 +1,66 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-class Toggle extends React.Component {
+function UserGreeting(props) {
+  return <h1>Welcome Back!</h1>;
+}
+function LogoutButton(props) {
+  return <button onClick={props.onClick}>Logout</button>;
+}
+
+function GuestGreeting(props) {
+  return <h1>Please sign up!</h1>;
+}
+function LoginButton(props) {
+  return <button onClick={props.onClick}>Login</button>;
+}
+
+class LoginControl extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isToggleOn: true };
-
-    // // JSではクラスのメソッドはデフォルトではバインドされない
-    // // bindを忘れて、thisはundefinedになる
-    // this.handleClick = this.handleClick.bind(this);
+    this.handleLoginClick = this.handleLoginClick.bind(this);
+    this.handleLogoutClick = this.handleLogoutClick.bind(this);
+    this.state = { isLoggedIn: false };
   }
 
-  handleClick() {
-    this.setState((prevState) => ({
-      isToggleOn: !prevState.isToggleOn,
-    }));
+  handleLoginClick() {
+    this.setState({ isLoggedIn: true });
+  }
+
+  handleLogoutClick() {
+    this.setState({ isLoggedIn: false });
   }
 
   render() {
+    const isLoggedIn = this.state.isLoggedIn;
+    let button;
+    if (isLoggedIn) {
+      button = <LogoutButton onClick={this.handleLogoutClick} />;
+    } else {
+      button = <LoginButton onClick={this.handleLoginClick} />;
+    }
+
     return (
-      // この書き方は、render のたびに 新しいコールバック関数が作成される
-      // 下層コンポーネントでpropsなどに使用していると下層コンポーネントでも再レンダリングされる
-      // パフォーマンスの問題が出るかも
-      <button onClick={() => this.handleClick()}>
-        {this.state.isToggleOn ? "ON" : "OFF"}
-      </button>
+      <div>
+        <Greeting isLoggedIn={isLoggedIn} />
+        {button}
+      </div>
     );
   }
+}
+
+function Greeting(props) {
+  const isLoggedIn = props.isLoggedIn;
+  if (isLoggedIn) {
+    return <UserGreeting />;
+  }
+  return <GuestGreeting />;
 }
 
 function App() {
   return (
     <div>
-      <Toggle />
+      <LoginControl />
     </div>
   );
 }
