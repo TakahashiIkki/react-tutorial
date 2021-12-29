@@ -1,34 +1,30 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-class Clock extends React.Component {
+class Toggle extends React.Component {
   constructor(props) {
-    // クラスのコンポーネントは常に props を引数として親クラスのコンストラクタを呼び出す必要があります。
     super(props);
-    this.state = { date: new Date() };
+    this.state = { isToggleOn: true };
+
+    // // JSではクラスのメソッドはデフォルトではバインドされない
+    // // bindを忘れて、thisはundefinedになる
+    // this.handleClick = this.handleClick.bind(this);
   }
 
-  tick() {
-    // state を直接変更してはならない
-    this.setState({ date: new Date() });
-  }
-
-  componentDidMount() {
-    // TODO: タイマーを設定したい
-    // このコンポーネントが最初にDOMとして描画される時: マウント
-    this.timerId = setInterval(() => this.tick(), 1000);
-  }
-  componentWillUnmount() {
-    // TODO: タイマーをクリアしたい
-    clearInterval(this.timerId);
+  handleClick() {
+    this.setState((prevState) => ({
+      isToggleOn: !prevState.isToggleOn,
+    }));
   }
 
   render() {
     return (
-      <div>
-        <h1>Hello, world!</h1>
-        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
-      </div>
+      // この書き方は、render のたびに 新しいコールバック関数が作成される
+      // 下層コンポーネントでpropsなどに使用していると下層コンポーネントでも再レンダリングされる
+      // パフォーマンスの問題が出るかも
+      <button onClick={() => this.handleClick()}>
+        {this.state.isToggleOn ? "ON" : "OFF"}
+      </button>
     );
   }
 }
@@ -36,9 +32,7 @@ class Clock extends React.Component {
 function App() {
   return (
     <div>
-      <Clock />
-      <Clock />
-      <Clock />
+      <Toggle />
     </div>
   );
 }
