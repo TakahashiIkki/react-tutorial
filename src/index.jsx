@@ -1,46 +1,46 @@
+import React from "react";
 import ReactDOM from "react-dom";
 
-function formatDate(date) {
-  return date.toLocaleDateString();
+class Clock extends React.Component {
+  constructor(props) {
+    // クラスのコンポーネントは常に props を引数として親クラスのコンストラクタを呼び出す必要があります。
+    super(props);
+    this.state = { date: new Date() };
+  }
+
+  tick() {
+    // state を直接変更してはならない
+    this.setState({ date: new Date() });
+  }
+
+  componentDidMount() {
+    // TODO: タイマーを設定したい
+    // このコンポーネントが最初にDOMとして描画される時: マウント
+    this.timerId = setInterval(() => this.tick(), 1000);
+  }
+  componentWillUnmount() {
+    // TODO: タイマーをクリアしたい
+    clearInterval(this.timerId);
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Hello, world!</h1>
+        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+      </div>
+    );
+  }
 }
 
-function Comment(props) {
+function App() {
   return (
-    <div className="Comment">
-      <UserInfo user={props.author} />
-      <div className="Comment-text">{props.text}</div>
-      <div className="Comment-date">{formatDate(props.date)}</div>
+    <div>
+      <Clock />
+      <Clock />
+      <Clock />
     </div>
   );
 }
 
-function Avatar(props) {
-  return (
-    <img className="Avatar" src={props.user.avatarUrl} alt={props.user.name} />
-  );
-}
-
-function UserInfo(props) {
-  return (
-    <div className="UserInfo">
-      <Avatar user={props.user} />
-      <div className="UserInfo-name">{props.user.name}</div>
-    </div>
-  );
-}
-
-// コンポーネントは常に大文字からはじめなければ見つけてくれない
-function Welcome(props) {
-  return <h1>Hello, {props.name}</h1>;
-}
-
-const author = {
-  avatarUrl:
-    "https://ferret.akamaized.net/uploads/article/6845/eyecatch/default-95e77d8922603c5a64085258c0cc3f96.png",
-  name: "sample",
-};
-const current = new Date();
-
-const element = <Comment author={author} text="aaaaa" date={current} />;
-
-ReactDOM.render(element, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById("root"));
